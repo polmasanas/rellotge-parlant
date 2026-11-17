@@ -36,6 +36,8 @@
 
 ### Task 1: Project scaffold and CI
 
+**Jira:** [RP-7](https://pmsns.atlassian.net/browse/RP-7)
+
 **Files:**
 - Create: `settings.gradle.kts`, `build.gradle.kts`, `gradle/libs.versions.toml`, Gradle wrapper, `app/build.gradle.kts`, `app/src/main/AndroidManifest.xml`, `app/src/main/res/values/strings.xml` (`app_name` = "Rellotge Parlant"), `.gitignore`, `.github/workflows/ci.yml`, `README.md`
 
@@ -49,6 +51,8 @@
 - [ ] **Step 5:** Commit `chore: scaffold Android project and CI` and push. Expected: green CI run.
 
 ### Task 2: Catalan time formatter
+
+**Jira:** [RP-8](https://pmsns.atlassian.net/browse/RP-8)
 
 **Files:**
 - Create: `app/src/main/java/cat/rellotgeparlant/time/CatalanTimeFormatter.kt`
@@ -97,6 +101,8 @@
 
 ### Task 3: Speak policy
 
+**Jira:** [RP-9](https://pmsns.atlassian.net/browse/RP-9)
+
 **Files:**
 - Create: `app/src/main/java/cat/rellotgeparlant/service/SpeakPolicy.kt`
 - Test: `app/src/test/java/cat/rellotgeparlant/service/SpeakPolicyTest.kt`
@@ -109,6 +115,8 @@
 - [ ] **Step 5:** Commit `feat: speak policy`.
 
 ### Task 4: Speaker (TTS wrapper)
+
+**Jira:** [RP-10](https://pmsns.atlassian.net/browse/RP-10)
 
 **Files:**
 - Create: `app/src/main/java/cat/rellotgeparlant/speech/Speaker.kt`, `speech/TtsEngine.kt`
@@ -130,6 +138,8 @@
 - [ ] **Step 5:** Commit `feat: Catalan TTS speaker`.
 
 ### Task 5: Foreground service, boot and watchdog
+
+**Jira:** [RP-11](https://pmsns.atlassian.net/browse/RP-11)
 
 **Files:**
 - Create: `service/SpeakerService.kt`, `service/BootReceiver.kt`, `service/WatchdogWorker.kt`, `service/TimeAnnouncer.kt`
@@ -159,6 +169,8 @@
 
 ### Task 6: Caregiver setup screen
 
+**Jira:** [RP-12](https://pmsns.atlassian.net/browse/RP-12)
+
 **Files:**
 - Create: `ui/MainActivity.kt`, `res/layout/activity_main.xml`, `setup/SetupChecks.kt`, `setup/OemAutostart.kt`, strings in `values/strings.xml`
 - Test: `app/src/test/java/cat/rellotgeparlant/setup/OemAutostartTest.kt`
@@ -184,6 +196,8 @@
 
 ### Task 7: Signed release
 
+**Jira:** [RP-13](https://pmsns.atlassian.net/browse/RP-13)
+
 **Files:**
 - Create: `.github/workflows/release.yml`
 - Modify: `app/build.gradle.kts` (release `signingConfig` from env vars `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`). Update `README.md` with install and setup steps in Catalan.
@@ -195,11 +209,15 @@
 
 ### Task 8: Native-speaker phrase review (manual)
 
+**Jira:** [RP-14](https://pmsns.atlassian.net/browse/RP-14)
+
 - [ ] Generate `phrase-table.txt` (Task 2 Step 5) and review it with the grandmother or the caregiver.
 - [ ] Turn every correction into a failing test in `CatalanTimeFormatterTest`, then fix it.
 - [ ] Sign-off is recorded in the Jira issue.
 
 ### Task 9: Field test on her phone (manual)
+
+**Jira:** [RP-15](https://pmsns.atlassian.net/browse/RP-15)
 
 - [ ] Install the release APK, then work through the setup checklist until everything is ✅ or ℹ️ handled.
 - [ ] One week of real use. Check that it still speaks after day 1, day 3 and day 7, and after a reboot.
