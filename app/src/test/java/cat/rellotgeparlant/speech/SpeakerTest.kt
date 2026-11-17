@@ -33,7 +33,9 @@ class SpeakerTest {
         val s = Speaker(e)
         s.say("pendent")
         e.ready()
+        assertEquals(VoiceStatus.MISSING, s.status)
         s.say("hola")
+        e.ready() // retry still finds no Catalan voice
         assertEquals(VoiceStatus.MISSING, s.status)
         assertTrue(e.spoken.isEmpty())
     }
@@ -42,8 +44,8 @@ class SpeakerTest {
         val e = FakeTtsEngine()
         val s = Speaker(e)
         e.ready(false)
-        s.say("hola")
         assertEquals(VoiceStatus.MISSING, s.status)
+        s.say("hola")
         assertTrue(e.spoken.isEmpty())
     }
 
@@ -51,5 +53,26 @@ class SpeakerTest {
         val e = FakeTtsEngine()
         Speaker(e).setRate(0.85f)
         assertEquals(0.85f, e.rate)
+    }
+
+    @Test fun rateSetBeforeReadySurvivesInit() {
+        val e = FakeTtsEngine()
+        val s = Speaker(e)
+        s.setRate(0.6f)
+        e.ready()
+        assertEquals(0.6f, e.rate)
+    }
+
+    @Test fun voiceInstalledLaterIsPickedUpOnNextSay() {
+        val e = FakeTtsEngine(catalan = false)
+        val s = Speaker(e)
+        e.ready()
+        assertEquals(VoiceStatus.MISSING, s.status)
+        e.catalan = true            // caregiver installs the Catalan voice
+        s.say("hola")
+        assertEquals(2, e.initCount) // engine re-initialised
+        e.ready()
+        assertEquals(VoiceStatus.READY, s.status)
+        assertEquals(listOf("hola" to true), e.spoken)
     }
 }

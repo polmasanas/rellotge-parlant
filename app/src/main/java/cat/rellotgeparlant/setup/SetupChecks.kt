@@ -45,9 +45,13 @@ fun runChecks(context: Context, voiceStatus: VoiceStatus): List<Check> {
         VoiceStatus.MISSING -> false
         VoiceStatus.INITIALISING -> null
     }
-    val googleTts = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${AndroidTtsEngine.GOOGLE_TTS}"))
-    val installVoice = Intent(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA)
-    checks += Check(CheckId.CATALAN_VOICE, voiceOk, if (voiceOk == false) installVoice else googleTts)
+    // Always target Google's engine: Samsung's own engine has no Catalan voice.
+    val voiceFix = if (AndroidTtsEngine.isGoogleEngineInstalled(context)) {
+        Intent(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA).setPackage(AndroidTtsEngine.GOOGLE_TTS)
+    } else {
+        Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${AndroidTtsEngine.GOOGLE_TTS}"))
+    }
+    checks += Check(CheckId.CATALAN_VOICE, voiceOk, voiceFix)
 
     checks += Check(CheckId.SERVICE_RUNNING, SpeakerService.isRunning, null)
 

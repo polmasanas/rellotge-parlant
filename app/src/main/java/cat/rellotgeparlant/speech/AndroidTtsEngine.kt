@@ -32,7 +32,7 @@ class AndroidTtsEngine(context: Context) : TtsEngine {
             if (ok) configure()
             onReady(ok)
         }
-        tts = if (googleEngineInstalled()) {
+        tts = if (isGoogleEngineInstalled(appContext)) {
             TextToSpeech(appContext, listener, GOOGLE_TTS)
         } else {
             TextToSpeech(appContext, listener)
@@ -59,7 +59,8 @@ class AndroidTtsEngine(context: Context) : TtsEngine {
 
     override fun speak(text: String, flush: Boolean) {
         val t = tts ?: return
-        audioManager.requestAudioFocus(focusRequest)
+        // Focus is refused during a call or while ringing: a second guard against talking over a call.
+        if (audioManager.requestAudioFocus(focusRequest) != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) return
         val mode = if (flush) TextToSpeech.QUEUE_FLUSH else TextToSpeech.QUEUE_ADD
         t.speak(text, mode, null, UUID.randomUUID().toString())
     }
@@ -73,12 +74,12 @@ class AndroidTtsEngine(context: Context) : TtsEngine {
         tts = null
     }
 
-    private fun googleEngineInstalled(): Boolean =
-        appContext.packageManager
-            .queryIntentServices(Intent(TextToSpeech.Engine.INTENT_ACTION_TTS_SERVICE), 0)
-            .any { it.serviceInfo.packageName == GOOGLE_TTS }
-
     companion object {
+        fun isGoogleEngineInstalled(context: Context): Boolean =
+            context.packageManager
+                .queryIntentServices(Intent(TextToSpeech.Engine.INTENT_ACTION_TTS_SERVICE), 0)
+                .any { it.serviceInfo.packageName == GOOGLE_TTS }
+
         const val GOOGLE_TTS = "com.google.android.tts"
         const val DEFAULT_RATE = 0.85f
         val CATALAN: Locale = Locale.forLanguageTag("ca-ES")
