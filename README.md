@@ -29,14 +29,69 @@ La taula completa de frases (1.440 minuts) es genera a `app/build/phrase-table.t
 
 ## Publicar una versió signada (una sola vegada: crear la clau)
 
-Guarda la clau i les contrasenyes en un lloc segur: sense la mateixa clau no es poden instal·lar actualitzacions per sobre.
+Fes-ho al **teu ordinador** (no en un servidor temporal). Guarda la clau i les contrasenyes en un lloc segur, per exemple un gestor de contrasenyes: sense la mateixa clau no es poden instal·lar actualitzacions per sobre. No pugis mai `release.jks` al repositori (el `.gitignore` ja ho impedeix).
+
+### 1. Comprova que tens `keytool`
+
+`keytool` ve amb Java. Si tens Android Studio ja el tens; si no, instal·la un JDK gratuït (p. ex. Temurin 17 d'adoptium.net). Comprova-ho en una terminal (Mac/Linux) o a PowerShell (Windows):
+
+```bash
+keytool -help
+```
+
+A Windows, si PowerShell no el troba però tens Android Studio, fes servir el que porta inclòs:
+
+```powershell
+& "C:\Program Files\Android\Android Studio\jbr\bin\keytool.exe" -help
+```
+
+### 2. Crea la clau
+
+Igual a Windows, Mac i Linux (et demanarà una contrasenya i unes dades de nom, que poden ser qualsevol cosa):
 
 ```bash
 keytool -genkeypair -v -keystore release.jks -alias rellotge -keyalg RSA -keysize 4096 -validity 10000
 ```
 
-Afegeix aquests secrets al repositori (Settings → Secrets and variables → Actions): `KEYSTORE_BASE64` (sortida de `base64 -w0 release.jks`), `KEYSTORE_PASSWORD`, `KEY_ALIAS` (`rellotge`), `KEY_PASSWORD`. Després:
+### 3. Converteix la clau a text per a GitHub
+
+Windows (PowerShell, a la mateixa carpeta; el resultat queda copiat al porta-retalls):
+
+```powershell
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("$PWD\release.jks")) | Set-Clipboard
+```
+
+Mac (queda copiat al porta-retalls):
 
 ```bash
-git tag v0.1.0 && git push origin v0.1.0
+base64 -i release.jks | pbcopy
 ```
+
+Linux:
+
+```bash
+base64 -w0 release.jks
+```
+
+### 4. Afegeix els secrets a GitHub
+
+Al repositori: **Settings → Secrets and variables → Actions → New repository secret**:
+
+| Nom | Valor |
+|---|---|
+| `KEYSTORE_BASE64` | el text del pas 3 |
+| `KEYSTORE_PASSWORD` | la contrasenya de la clau |
+| `KEY_ALIAS` | `rellotge` |
+| `KEY_PASSWORD` | la mateixa contrasenya (si no n'has posat una de diferent per a la clau) |
+
+### 5. Publica la versió
+
+```bash
+git tag v0.1.0
+```
+
+```bash
+git push origin v0.1.0
+```
+
+GitHub compilarà l'APK signat i l'adjuntarà a la pàgina de Releases.
