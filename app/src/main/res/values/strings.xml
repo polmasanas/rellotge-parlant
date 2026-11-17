@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Rellotge Parlant</string>
+    <string name="channel_name">Rellotge parlant</string>
+    <string name="notification_title">Rellotge parlant actiu</string>
 </resources>
