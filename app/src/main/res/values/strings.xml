@@ -4,7 +4,8 @@
     <string name="channel_name">Rellotge parlant</string>
     <string name="notification_title">Rellotge parlant actiu</string>
 
-    <string name="intro">Aquesta pantalla és per a qui configura el telèfon. Quan el telèfon està bloquejat i s\'encén la pantalla amb el botó lateral, diu l\'hora en veu alta.</string>
+    <string name="intro">Aquesta pantalla és per a qui configura el telèfon. Diu l\'hora en veu alta quan s\'encén la pantalla del telèfon bloquejat amb el botó lateral, i també quan la pantalla s\'apaga i es bloqueja.</string>
+    <string name="speech_enabled">Dir l\'hora en veu alta</string>
     <string name="test_button">Prova</string>
     <string name="rate_label">Velocitat de la veu: %1$.2f</string>
     <string name="checklist_title">Llista de comprovació</string>

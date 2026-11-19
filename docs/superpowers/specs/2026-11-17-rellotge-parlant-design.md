@@ -81,6 +81,11 @@ false triggers in a bag), and automatic periodic announcements (not on demand; m
   → speak the current time once. Waking an already-unlocked phone stays silent.
   *(Builder-check call: this filters most non-button wakes. The setup checklist also asks the
   caregiver to disable "wake screen for notifications" / ambient wake features.)*
+- **(v0.1.1)** Also speak on every `SCREEN_OFF` (the screen turning off and locking: side button
+  or timeout), with the same call/ringing guard. The screen turning off during a call (proximity
+  sensor) is silent because the audio mode is not normal.
+- **(v0.1.1)** An on/off switch on the caregiver screen ("Dir l'hora en veu alta", default on)
+  disables both triggers. The "Prova" button still speaks while it's off, since it's a test.
 - No night-time silence: waking at night and wanting the time is a key use case.
 - **Don't speak** when the phone is ringing or in a call (check
   `AudioManager.mode` ≠ `MODE_NORMAL` and/or the telephony call state). A missed

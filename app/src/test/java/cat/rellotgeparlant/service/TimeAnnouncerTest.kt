@@ -24,26 +24,37 @@ class TimeAnnouncerTest {
     private val clock = MutableClock(Instant.parse("2026-11-17T16:35:00Z"), ZoneOffset.UTC)
     private val announcer = TimeAnnouncer(clock, speaker)
 
-    @Test fun lockedAndIdleSpeaksTime() {
-        announcer.onScreenOn(keyguardLocked = true, audioMode = 0)
+    @Test fun lockedWakeSpeaksTime() {
+        announcer.onScreenEvent(ScreenEvent.ON, enabled = true, keyguardLocked = true, audioMode = 0)
         assertEquals(listOf("Són dos quarts i cinc de cinc de la tarda."), engine.spoken.map { it.first })
     }
 
-    @Test fun unlockedIsSilent() {
-        announcer.onScreenOn(keyguardLocked = false, audioMode = 0)
+    @Test fun screenOffSpeaksTime() {
+        announcer.onScreenEvent(ScreenEvent.OFF, enabled = true, keyguardLocked = false, audioMode = 0)
+        assertEquals(listOf("Són dos quarts i cinc de cinc de la tarda."), engine.spoken.map { it.first })
+    }
+
+    @Test fun unlockedWakeIsSilent() {
+        announcer.onScreenEvent(ScreenEvent.ON, enabled = true, keyguardLocked = false, audioMode = 0)
+        assertTrue(engine.spoken.isEmpty())
+    }
+
+    @Test fun disabledIsSilent() {
+        announcer.onScreenEvent(ScreenEvent.ON, enabled = false, keyguardLocked = true, audioMode = 0)
+        announcer.onScreenEvent(ScreenEvent.OFF, enabled = false, keyguardLocked = true, audioMode = 0)
         assertTrue(engine.spoken.isEmpty())
     }
 
     @Test fun inCallIsSilent() {
-        announcer.onScreenOn(keyguardLocked = true, audioMode = 2)
+        announcer.onScreenEvent(ScreenEvent.ON, enabled = true, keyguardLocked = true, audioMode = 2)
         assertTrue(engine.spoken.isEmpty())
     }
 
     @Test fun readsClockOnEveryCall() {
-        announcer.onScreenOn(true, 0)
+        announcer.onScreenEvent(ScreenEvent.ON, enabled = true, keyguardLocked = true, audioMode = 0)
         clock.instant = Instant.parse("2026-11-17T08:00:00Z")
         clock.zoneId = ZoneId.of("Europe/Madrid") // 09:00 local
-        announcer.onScreenOn(true, 0)
+        announcer.onScreenEvent(ScreenEvent.ON, enabled = true, keyguardLocked = true, audioMode = 0)
         assertEquals("Són les nou del matí.", engine.spoken.last().first)
     }
 }

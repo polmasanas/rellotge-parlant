@@ -22,18 +22,22 @@ import cat.rellotgeparlant.speech.AndroidTtsEngine
 import cat.rellotgeparlant.speech.Speaker
 import cat.rellotgeparlant.ui.MainActivity
 
-/** Always-on service: speaks the time each time the locked phone's screen turns on. */
+/** Always-on service: speaks the time when the locked phone's screen turns on, and when the screen turns off. */
 class SpeakerService : Service() {
 
     private lateinit var speaker: Speaker
     private lateinit var announcer: TimeAnnouncer
 
-    private val screenOnReceiver = object : BroadcastReceiver() {
+    private val screenReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action != Intent.ACTION_SCREEN_ON) return
+            val event = when (intent.action) {
+                Intent.ACTION_SCREEN_ON -> ScreenEvent.ON
+                Intent.ACTION_SCREEN_OFF -> ScreenEvent.OFF
+                else -> return
+            }
             val keyguard = getSystemService(KeyguardManager::class.java)
             val audio = getSystemService(AudioManager::class.java)
-            announcer.onScreenOn(keyguard.isKeyguardLocked, audio.mode)
+            announcer.onScreenEvent(event, Prefs.speechEnabled(context), keyguard.isKeyguardLocked, audio.mode)
         }
     }
 
@@ -44,7 +48,11 @@ class SpeakerService : Service() {
         speaker.setRate(Prefs.speechRate(this))
         announcer = TimeAnnouncer(LiveSystemClock, speaker)
         ContextCompat.registerReceiver(
-            this, screenOnReceiver, IntentFilter(Intent.ACTION_SCREEN_ON),
+            this, screenReceiver,
+            IntentFilter().apply {
+                addAction(Intent.ACTION_SCREEN_ON)
+                addAction(Intent.ACTION_SCREEN_OFF)
+            },
             ContextCompat.RECEIVER_NOT_EXPORTED,
         )
     }
@@ -62,7 +70,7 @@ class SpeakerService : Service() {
     }
 
     override fun onDestroy() {
-        unregisterReceiver(screenOnReceiver)
+        unregisterReceiver(screenReceiver)
         speaker.shutdown()
         isRunning = false
         super.onDestroy()

@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import cat.rellotgeparlant.R
 import cat.rellotgeparlant.service.Prefs
 import cat.rellotgeparlant.service.SpeakerService
@@ -42,6 +43,11 @@ class MainActivity : AppCompatActivity() {
             SpeakerService.ensureRunning(this, SpeakerService.ACTION_SPEAK_NOW)
         }
         setUpRateSlider()
+
+        findViewById<SwitchCompat>(R.id.speech_enabled).apply {
+            isChecked = Prefs.speechEnabled(this@MainActivity)
+            setOnCheckedChangeListener { _, checked -> Prefs.setSpeechEnabled(this@MainActivity, checked) }
+        }
     }
 
     override fun onResume() {

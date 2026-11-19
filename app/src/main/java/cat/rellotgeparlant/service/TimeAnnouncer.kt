@@ -5,11 +5,11 @@ import cat.rellotgeparlant.time.CatalanTimeFormatter
 import java.time.Clock
 import java.time.LocalTime
 
-/** Turns a screen wake into a spoken time, reading the clock at the moment of speaking. */
+/** Turns a screen event into a spoken time, reading the clock at the moment of speaking. */
 class TimeAnnouncer(private val clock: Clock, private val speaker: Speaker) {
 
-    fun onScreenOn(keyguardLocked: Boolean, audioMode: Int) {
-        if (!SpeakPolicy.shouldSpeak(keyguardLocked, audioMode)) return
+    fun onScreenEvent(event: ScreenEvent, enabled: Boolean, keyguardLocked: Boolean, audioMode: Int) {
+        if (!SpeakPolicy.shouldSpeak(enabled, event, keyguardLocked, audioMode)) return
         speakNow()
     }
 

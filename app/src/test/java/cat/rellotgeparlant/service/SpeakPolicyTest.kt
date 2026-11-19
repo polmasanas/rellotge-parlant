@@ -1,5 +1,7 @@
 package cat.rellotgeparlant.service
 
+import cat.rellotgeparlant.service.ScreenEvent.OFF
+import cat.rellotgeparlant.service.ScreenEvent.ON
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -11,9 +13,16 @@ class SpeakPolicyTest {
     private val inCall = 2
     private val inCommunication = 3
 
-    @Test fun speaksWhenLockedAndIdle() = assertTrue(SpeakPolicy.shouldSpeak(true, normal))
-    @Test fun silentWhenUnlocked() = assertFalse(SpeakPolicy.shouldSpeak(false, normal))
-    @Test fun silentWhileRinging() = assertFalse(SpeakPolicy.shouldSpeak(true, ringtone))
-    @Test fun silentInCall() = assertFalse(SpeakPolicy.shouldSpeak(true, inCall))
-    @Test fun silentInVoip() = assertFalse(SpeakPolicy.shouldSpeak(true, inCommunication))
+    private fun speak(event: ScreenEvent, enabled: Boolean = true, locked: Boolean = true, mode: Int = normal) =
+        SpeakPolicy.shouldSpeak(enabled, event, locked, mode)
+
+    @Test fun wakeOnLockScreenSpeaks() = assertTrue(speak(ON))
+    @Test fun wakeWhenUnlockedIsSilent() = assertFalse(speak(ON, locked = false))
+    @Test fun screenOffSpeaks() = assertTrue(speak(OFF, locked = false))
+    @Test fun disabledSilentOnWake() = assertFalse(speak(ON, enabled = false))
+    @Test fun disabledSilentOnScreenOff() = assertFalse(speak(OFF, enabled = false))
+    @Test fun silentWhileRinging() = assertFalse(speak(ON, mode = ringtone))
+    @Test fun silentInCall() = assertFalse(speak(ON, mode = inCall))
+    @Test fun screenOffDuringCallIsSilent() = assertFalse(speak(OFF, mode = inCall))
+    @Test fun silentInVoip() = assertFalse(speak(OFF, mode = inCommunication))
 }
