@@ -66,7 +66,7 @@ class SpeakerService : Service() {
         val now = LocalDateTime.now()
         val s = Prefs.eventSettings(this)
         val events = CalendarSource(this).events(Prefs.calendarId(this), now, now.plusHours(s.hoursAhead.toLong()))
-        return EventText.upcomingSentence(UpcomingEvents.select(events, now, s.hoursAhead), now.toLocalDate(), s)
+        return EventText.upcomingSentence(UpcomingEvents.select(events, now, s.hoursAhead), now, s)
     }
 
     override fun onCreate() {

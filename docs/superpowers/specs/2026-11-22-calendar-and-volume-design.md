@@ -56,6 +56,10 @@ same natural Catalan as the time. Separately, the caregiver needs to be able to 
 - At most **3** events are read. Beyond that it says "…i N més".
 
 ### 5.2 What is said for an event
+
+> **v0.2.1 change:** the start is said as time remaining, *"D'aquí dues hores i quinze minuts: …"*
+> (exact minutes, numbers in words with gender agreement, "Ara mateix" under one minute), replacing
+> "Avui/Demà, a <hora>". Reminders read *"Recordatori: d'aquí una hora: …"*.
 `<Avui|Demà>, <at-time>: <title>.[ Lloc: <location>.][ <description>]`
 
 - **at-time** uses the quarts formatter, rounded down, without the verb:

@@ -14,7 +14,7 @@ class ReminderPlannerTest {
     private fun allDay(date: LocalDate, title: String = "Aniversari") = CalendarEvent(date.atStartOfDay(), true, title, null, null)
 
     @Test fun reminderOneHourBefore() = assertEquals(
-        PlannedSpeech(day.atTime(11, 0), "Recordatori: Avui, a les dotze del migdia: Metge."),
+        PlannedSpeech(day.atTime(11, 0), "Recordatori: d'aquí una hora: Metge."),
         ReminderPlanner.next(listOf(ev(12)), now, s),
     )
 
@@ -52,11 +52,11 @@ class ReminderPlannerTest {
         // default morning 09:00 + reminder 60 min for a 10:00 event → both due at 09:00
         val r = ReminderPlanner.next(listOf(allDay(day, "Aniversari de la Núria"), ev(10, title = "Metge")), day.atTime(8, 0), s)!!
         assertEquals(day.atTime(9, 0), r.at)
-        assertEquals("Bon dia. Avui: Aniversari de la Núria. Recordatori: Avui, a les deu del matí: Metge.", r.text)
+        assertEquals("Bon dia. Avui: Aniversari de la Núria. Recordatori: d'aquí una hora: Metge.", r.text)
     }
 
     @Test fun twoEventsSameStartBothReminded() {
         val r = ReminderPlanner.next(listOf(ev(12, title = "Metge"), ev(12, title = "Farmàcia")), now, s)!!
-        assertEquals("Recordatori: Avui, a les dotze del migdia: Metge. Recordatori: Avui, a les dotze del migdia: Farmàcia.", r.text)
+        assertEquals("Recordatori: d'aquí una hora: Metge. Recordatori: d'aquí una hora: Farmàcia.", r.text)
     }
 }

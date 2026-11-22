@@ -18,7 +18,7 @@ object ReminderPlanner {
             events.filter { !it.allDay }.sortedBy { it.start }.forEach { e ->
                 val at = e.start.minusMinutes(s.reminderMinutes.toLong())
                 if (at.isAfter(now)) {
-                    candidates += PlannedSpeech(at, "Recordatori: " + EventText.describe(e, at.toLocalDate(), s))
+                    candidates += PlannedSpeech(at, "Recordatori: " + EventText.describe(e, at, s).replaceFirstChar { it.lowercase() })
                 }
             }
         }

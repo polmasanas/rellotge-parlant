@@ -1,7 +1,8 @@
 package cat.rellotgeparlant.calendar
 
-import cat.rellotgeparlant.time.CatalanTimeFormatter
-import java.time.LocalDate
+import cat.rellotgeparlant.time.RelativeTime
+import java.time.Duration
+import java.time.LocalDateTime
 
 /** Builds what is said about calendar events, in Catalan. */
 object EventText {
@@ -21,18 +22,18 @@ object EventText {
         else twoSentences.take(MAX_DESCRIPTION - 1).trimEnd() + "…"
     }
 
-    fun describe(e: CalendarEvent, today: LocalDate, s: EventSettings): String {
-        val day = if (e.start.toLocalDate() == today) "Avui" else "Demà"
-        val at = CatalanTimeFormatter.atPhrase(e.start.hour, e.start.minute)
-        val parts = mutableListOf("$day, $at: ${sentence(e.title) ?: "un esdeveniment."}")
+    /** "D'aquí dues hores i quinze minuts: Metge. Lloc: …" — how long from [now] until the event. */
+    fun describe(e: CalendarEvent, now: LocalDateTime, s: EventSettings): String {
+        val until = RelativeTime.phrase(Duration.between(now, e.start).toMinutes())
+        val parts = mutableListOf("${until.replaceFirstChar { it.uppercase() }}: ${sentence(e.title) ?: "un esdeveniment."}")
         if (s.readLocation) sentence(e.location)?.let { parts += "Lloc: $it" }
         if (s.readDescription) cleanDescription(e.description)?.let { parts += it }
         return parts.joinToString(" ")
     }
 
-    fun upcomingSentence(events: List<CalendarEvent>, today: LocalDate, s: EventSettings): String? {
+    fun upcomingSentence(events: List<CalendarEvent>, now: LocalDateTime, s: EventSettings): String? {
         if (events.isEmpty()) return null
-        val said = events.take(MAX_EVENTS).joinToString(" ") { describe(it, today, s) }
+        val said = events.take(MAX_EVENTS).joinToString(" ") { describe(it, now, s) }
         val more = events.size - MAX_EVENTS
         return if (more > 0) "$said I $more més." else said
     }
