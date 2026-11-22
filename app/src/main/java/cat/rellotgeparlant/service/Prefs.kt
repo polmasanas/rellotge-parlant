@@ -11,6 +11,7 @@ object Prefs {
     private const val FILE = "rellotge"
     private const val KEY_RATE = "speech_rate"
     private const val KEY_ENABLED = "speech_enabled"
+    private const val KEY_VOLUME = "voice_volume"
     private const val KEY_CALENDAR = "calendar_id"
     private const val KEY_HOURS = "hours_ahead"
     private const val KEY_REMINDER = "reminder_minutes"
@@ -25,6 +26,9 @@ object Prefs {
 
     fun speechRate(context: Context): Float = p(context).getFloat(KEY_RATE, AndroidTtsEngine.DEFAULT_RATE)
     fun setSpeechRate(context: Context, rate: Float) = p(context).edit { putFloat(KEY_RATE, rate) }
+
+    fun voiceVolume(context: Context): Float = p(context).getFloat(KEY_VOLUME, 1f)
+    fun setVoiceVolume(context: Context, volume: Float) = p(context).edit { putFloat(KEY_VOLUME, volume) }
 
     fun calendarId(context: Context): Long = p(context).getLong(KEY_CALENDAR, -1L)
     fun setCalendarId(context: Context, id: Long) = p(context).edit { putLong(KEY_CALENDAR, id) }

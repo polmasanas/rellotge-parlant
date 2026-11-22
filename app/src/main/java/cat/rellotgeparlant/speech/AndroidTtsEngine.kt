@@ -16,6 +16,7 @@ class AndroidTtsEngine(context: Context) : TtsEngine {
     private val appContext = context.applicationContext
     private val audioManager = appContext.getSystemService(AudioManager::class.java)
     private var tts: TextToSpeech? = null
+    private var volume = 1f
 
     private val attributes = AudioAttributes.Builder()
         .setUsage(AudioAttributes.USAGE_ALARM)
@@ -62,11 +63,16 @@ class AndroidTtsEngine(context: Context) : TtsEngine {
         // Focus is refused during a call or while ringing: a second guard against talking over a call.
         if (audioManager.requestAudioFocus(focusRequest) != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) return
         val mode = if (flush) TextToSpeech.QUEUE_FLUSH else TextToSpeech.QUEUE_ADD
-        t.speak(text, mode, null, UUID.randomUUID().toString())
+        val params = android.os.Bundle().apply { putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, volume) }
+        t.speak(text, mode, params, UUID.randomUUID().toString())
     }
 
     override fun setRate(rate: Float) {
         tts?.setSpeechRate(rate)
+    }
+
+    override fun setVolume(volume: Float) {
+        this.volume = volume.coerceIn(0f, 1f)
     }
 
     override fun shutdown() {

@@ -67,6 +67,7 @@ class SpeakerService : Service() {
         isRunning = true
         speaker = Speaker(AndroidTtsEngine(this))
         speaker.setRate(Prefs.speechRate(this))
+        speaker.setVolume(Prefs.voiceVolume(this))
         announcer = TimeAnnouncer(LiveSystemClock, speaker) { upcomingEvents() }
         runCatching {
             contentResolver.registerContentObserver(CalendarContract.Events.CONTENT_URI, true, calendarObserver)
@@ -90,6 +91,7 @@ class SpeakerService : Service() {
         when (intent?.action) {
             ACTION_SPEAK_NOW -> announcer.speakNow()
             ACTION_RATE_CHANGED -> speaker.setRate(Prefs.speechRate(this))
+            ACTION_VOLUME_CHANGED -> speaker.setVolume(Prefs.voiceVolume(this))
             ACTION_SPEAK_EVENTS_TEST -> speaker.say(upcomingEvents() ?: getString(R.string.no_upcoming_events))
             ACTION_SPEAK_TEXT -> {
                 val text = intent.getStringExtra(EXTRA_TEXT)
@@ -135,6 +137,7 @@ class SpeakerService : Service() {
         private const val NOTIFICATION_ID = 1
         const val ACTION_SPEAK_NOW = "cat.rellotgeparlant.SPEAK_NOW"
         const val ACTION_RATE_CHANGED = "cat.rellotgeparlant.RATE_CHANGED"
+        const val ACTION_VOLUME_CHANGED = "cat.rellotgeparlant.VOLUME_CHANGED"
         const val ACTION_SPEAK_TEXT = "cat.rellotgeparlant.SPEAK_TEXT"
         const val ACTION_SPEAK_EVENTS_TEST = "cat.rellotgeparlant.SPEAK_EVENTS_TEST"
         const val EXTRA_TEXT = "text"

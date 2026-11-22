@@ -75,4 +75,18 @@ class SpeakerTest {
         assertEquals(VoiceStatus.READY, s.status)
         assertEquals(listOf("hola" to true), e.spoken)
     }
+
+    @Test fun volumeIsForwarded() {
+        val e = FakeTtsEngine()
+        Speaker(e).also { e.ready() }.setVolume(0.4f)
+        assertEquals(0.4f, e.volume)
+    }
+
+    @Test fun volumeSetBeforeReadySurvivesInit() {
+        val e = FakeTtsEngine()
+        val s = Speaker(e)
+        s.setVolume(0.3f)
+        e.ready()
+        assertEquals(0.3f, e.volume)
+    }
 }

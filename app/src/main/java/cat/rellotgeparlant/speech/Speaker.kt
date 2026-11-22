@@ -14,6 +14,7 @@ class Speaker(private val engine: TtsEngine) {
 
     private var pending: String? = null
     private var rate: Float? = null
+    private var volume: Float? = null
 
     init {
         engine.init { ok -> onEngineReady(ok) }
@@ -22,7 +23,8 @@ class Speaker(private val engine: TtsEngine) {
     @Synchronized
     private fun onEngineReady(ok: Boolean) {
         status = if (ok && engine.isCatalanAvailable()) VoiceStatus.READY else VoiceStatus.MISSING
-        rate?.let { engine.setRate(it) } // initialisation resets the engine's rate
+        rate?.let { engine.setRate(it) } // initialisation resets the engine's rate and volume
+        volume?.let { engine.setVolume(it) }
         val text = pending
         pending = null
         if (status == VoiceStatus.READY && text != null) engine.speak(text, flush = true)
@@ -46,6 +48,12 @@ class Speaker(private val engine: TtsEngine) {
     fun setRate(rate: Float) {
         this.rate = rate
         engine.setRate(rate)
+    }
+
+    @Synchronized
+    fun setVolume(volume: Float) {
+        this.volume = volume
+        engine.setVolume(volume)
     }
 
     fun shutdown() = engine.shutdown()

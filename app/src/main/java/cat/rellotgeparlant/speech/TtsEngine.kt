@@ -6,5 +6,6 @@ interface TtsEngine {
     fun isCatalanAvailable(): Boolean
     fun speak(text: String, flush: Boolean)
     fun setRate(rate: Float)
+    fun setVolume(volume: Float)
     fun shutdown()
 }
