@@ -97,4 +97,22 @@ class CatalanTimeFormatterTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun rejectsOutOfRangeMinute() { p(10, 60) }
+
+    @Test fun atPhraseExamples() {
+        val a = CatalanTimeFormatter::atPhrase
+        assertEquals("a dos quarts de sis de la tarda", a(17, 30))
+        assertEquals("a la una del migdia", a(13, 0))
+        assertEquals("a les cinc de la tarda", a(17, 0))
+        assertEquals("a un quart de deu del vespre", a(21, 15))
+        assertEquals("a les cinc menys cinc de la tarda", a(16, 55))
+        assertEquals("a un quart menys cinc de sis de la tarda", a(17, 12))
+        assertEquals("a les dotze i cinc del migdia", a(12, 5))
+    }
+
+    @Test fun atPhraseMatchesPhraseForAllMinutes() {
+        for (h in 0..23) for (m in 0..59) {
+            val full = p(h, m).removePrefix("És ").removePrefix("Són ")
+            assertEquals("$h:$m", full, CatalanTimeFormatter.atPhrase(h, m).removePrefix("a ") + ".")
+        }
+    }
 }

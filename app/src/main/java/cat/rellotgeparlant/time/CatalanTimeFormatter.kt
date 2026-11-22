@@ -32,26 +32,32 @@ object CatalanTimeFormatter {
     )
 
     fun phrase(hour: Int, minute: Int): String {
+        val (body, plural) = body(hour, minute)
+        return "${if (plural) "Són" else "És"} $body."
+    }
+
+    /** The same time as [phrase] but as a complement: "a dos quarts de sis de la tarda". */
+    fun atPhrase(hour: Int, minute: Int): String = "a ${body(hour, minute).first}"
+
+    /** The phrase without verb or final stop, and whether its subject is plural. */
+    private fun body(hour: Int, minute: Int): Pair<String, Boolean> {
         require(hour in 0..23) { "hour out of range: $hour" }
         require(minute in 0..59) { "minute out of range: $minute" }
 
         val anchor = ANCHORS.last { it <= minute }
         val current = hour % 12
         val next = (hour + 1) % 12
+        val part = dayPart(hour)
 
-        val body = when (anchor) {
-            0 -> withArticle(current)
-            5 -> "${withArticle(current)} i cinc"
-            55 -> "${withArticle(next)} menys cinc"
+        return when (anchor) {
+            0 -> "${withArticle(current)} $part" to (current != 1)
+            5 -> "${withArticle(current)} i cinc $part" to (current != 1)
+            55 -> "${withArticle(next)} menys cinc $part" to (next != 1)
             else -> {
                 val (subject, plural) = QUARTERS.getValue(anchor)
-                val verb = if (plural) "Són" else "És"
-                return "$verb $subject ${ofHour(next)} ${dayPart(hour)}."
+                "$subject ${ofHour(next)} $part" to plural
             }
         }
-        val anchorHour = if (anchor == 55) next else current
-        val verb = if (anchorHour == 1) "És" else "Són"
-        return "$verb $body ${dayPart(hour)}."
     }
 
     private fun withArticle(h12: Int): String =
