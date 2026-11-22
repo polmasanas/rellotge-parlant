@@ -23,4 +23,23 @@
     <string name="check_wake">Desactiva «Encén la pantalla amb notificacions» / pantalla ambient, si el telèfon ho té</string>
     <string name="check_autostart">Permet l\'inici automàtic d\'aquesta app als ajustos del fabricant</string>
     <string name="no_upcoming_events">No hi ha cap esdeveniment a les properes hores.</string>
+    <string name="volume_label">Volum de la veu: %1$d%%</string>
+    <string name="calendar_title">Calendari de la família</string>
+    <string name="calendar_help">Esdeveniments del calendari escollit que es llegeixen en veu alta.</string>
+    <string name="calendar_none">Cap (no llegir esdeveniments)</string>
+    <string name="hours_label">Avisar dels esdeveniments de les properes %1$d hores</string>
+    <string name="reminder_label">Recordatori abans de cada esdeveniment</string>
+    <string name="morning_label">Avís del matí (esdeveniments de tot el dia): %1$s</string>
+    <string name="read_location">Llegir el lloc</string>
+    <string name="read_description">Llegir la descripció</string>
+    <string name="test_calendar">Prova el calendari</string>
+    <string name="check_alarm_volume">Volum d\'alarma prou alt (la veu no pot sonar més fort que l\'alarma)</string>
+    <string name="check_calendar">Permís per llegir el calendari</string>
+    <string-array name="reminder_options">
+        <item>Cap recordatori</item>
+        <item>15 minuts abans</item>
+        <item>30 minuts abans</item>
+        <item>1 hora abans</item>
+        <item>2 hores abans</item>
+    </string-array>
 </resources>

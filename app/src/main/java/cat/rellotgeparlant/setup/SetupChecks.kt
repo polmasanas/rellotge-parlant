@@ -6,6 +6,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
@@ -16,7 +17,10 @@ import cat.rellotgeparlant.service.SpeakerService
 import cat.rellotgeparlant.speech.AndroidTtsEngine
 import cat.rellotgeparlant.speech.VoiceStatus
 
-enum class CheckId { NOTIFICATIONS, BATTERY_OPTIMISATION, CATALAN_VOICE, SERVICE_RUNNING, SWIPE_LOCK, NOTIFICATION_WAKE, OEM_AUTOSTART }
+enum class CheckId { NOTIFICATIONS, BATTERY_OPTIMISATION, CATALAN_VOICE, SERVICE_RUNNING, ALARM_VOLUME, CALENDAR_PERMISSION, SWIPE_LOCK, NOTIFICATION_WAKE, OEM_AUTOSTART }
+
+/** The voice can't be louder than the alarm volume: warn below half. */
+fun alarmVolumeOk(current: Int, max: Int): Boolean = max > 0 && current * 2 >= max
 
 /** ok == null means it can't be detected automatically: shown as an instruction. */
 data class Check(val id: CheckId, val ok: Boolean?, val fix: Intent?)
@@ -54,6 +58,17 @@ fun runChecks(context: Context, voiceStatus: VoiceStatus): List<Check> {
     checks += Check(CheckId.CATALAN_VOICE, voiceOk, voiceFix)
 
     checks += Check(CheckId.SERVICE_RUNNING, SpeakerService.isRunning, null)
+
+    val audio = context.getSystemService(AudioManager::class.java)
+    checks += Check(
+        CheckId.ALARM_VOLUME,
+        alarmVolumeOk(audio.getStreamVolume(AudioManager.STREAM_ALARM), audio.getStreamMaxVolume(AudioManager.STREAM_ALARM)),
+        Intent(Settings.ACTION_SOUND_SETTINGS),
+    )
+
+    val calendarOk = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR) ==
+        PackageManager.PERMISSION_GRANTED
+    checks += Check(CheckId.CALENDAR_PERMISSION, calendarOk, Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, appUri))
 
     val keyguard = context.getSystemService(KeyguardManager::class.java)
     checks += Check(

@@ -47,6 +47,87 @@
             android:max="70" />
 
         <TextView
+            android:id="@+id/volume_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+
+        <SeekBar
+            android:id="@+id/volume"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="90" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/calendar_title"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/calendar_help" />
+
+        <Spinner
+            android:id="@+id/calendar_picker"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/hours_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" />
+
+        <SeekBar
+            android:id="@+id/hours"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="23" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/reminder_label" />
+
+        <Spinner
+            android:id="@+id/reminder"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:entries="@array/reminder_options" />
+
+        <Button
+            android:id="@+id/morning_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/read_location"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/read_location" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/read_description"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/read_description" />
+
+        <Button
+            android:id="@+id/test_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/test_calendar"
+            android:textSize="20sp" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
