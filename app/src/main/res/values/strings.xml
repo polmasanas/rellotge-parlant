@@ -22,4 +22,5 @@
     <string name="check_lock">Bloqueig de pantalla: ha de ser «Lliscar», sense PIN ni patró, i no «Cap»</string>
     <string name="check_wake">Desactiva «Encén la pantalla amb notificacions» / pantalla ambient, si el telèfon ho té</string>
     <string name="check_autostart">Permet l\'inici automàtic d\'aquesta app als ajustos del fabricant</string>
+    <string name="no_upcoming_events">No hi ha cap esdeveniment a les properes hores.</string>
 </resources>

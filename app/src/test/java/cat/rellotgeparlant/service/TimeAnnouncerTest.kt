@@ -57,4 +57,16 @@ class TimeAnnouncerTest {
         announcer.onScreenEvent(ScreenEvent.ON, enabled = true, keyguardLocked = true, audioMode = 0)
         assertEquals("Són les nou del matí.", engine.spoken.last().first)
     }
+
+    @Test fun appendsEvents() {
+        val a = TimeAnnouncer(clock, speaker) { "Avui, a les sis de la tarda: Metge." }
+        a.speakNow()
+        assertEquals("Són dos quarts i cinc de cinc de la tarda. Avui, a les sis de la tarda: Metge.", engine.spoken.last().first)
+    }
+
+    @Test fun noEventsJustTime() {
+        val a = TimeAnnouncer(clock, speaker) { null }
+        a.speakNow()
+        assertEquals("Són dos quarts i cinc de cinc de la tarda.", engine.spoken.last().first)
+    }
 }

@@ -11,6 +11,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ServiceInfo
+import android.database.ContentObserver
+import android.os.Handler
+import android.os.Looper
+import android.provider.CalendarContract
 import android.media.AudioManager
 import android.os.Build
 import android.os.IBinder
@@ -18,6 +22,11 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import cat.rellotgeparlant.R
+import cat.rellotgeparlant.calendar.CalendarSource
+import cat.rellotgeparlant.calendar.EventText
+import cat.rellotgeparlant.calendar.ReminderScheduler
+import cat.rellotgeparlant.calendar.UpcomingEvents
+import java.time.LocalDateTime
 import cat.rellotgeparlant.speech.AndroidTtsEngine
 import cat.rellotgeparlant.speech.Speaker
 import cat.rellotgeparlant.ui.MainActivity
@@ -41,12 +50,28 @@ class SpeakerService : Service() {
         }
     }
 
+    private val calendarObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
+        override fun onChange(selfChange: Boolean) = ReminderScheduler.reschedule(this@SpeakerService)
+    }
+
+    /** Upcoming events from the chosen calendar, as one spoken sentence, or null. */
+    private fun upcomingEvents(): String? {
+        val now = LocalDateTime.now()
+        val s = Prefs.eventSettings(this)
+        val events = CalendarSource(this).events(Prefs.calendarId(this), now, now.plusHours(s.hoursAhead.toLong()))
+        return EventText.upcomingSentence(UpcomingEvents.select(events, now, s.hoursAhead), now.toLocalDate(), s)
+    }
+
     override fun onCreate() {
         super.onCreate()
         isRunning = true
         speaker = Speaker(AndroidTtsEngine(this))
         speaker.setRate(Prefs.speechRate(this))
-        announcer = TimeAnnouncer(LiveSystemClock, speaker)
+        announcer = TimeAnnouncer(LiveSystemClock, speaker) { upcomingEvents() }
+        runCatching {
+            contentResolver.registerContentObserver(CalendarContract.Events.CONTENT_URI, true, calendarObserver)
+        }
+        ReminderScheduler.reschedule(this)
         ContextCompat.registerReceiver(
             this, screenReceiver,
             IntentFilter().apply {
@@ -65,12 +90,22 @@ class SpeakerService : Service() {
         when (intent?.action) {
             ACTION_SPEAK_NOW -> announcer.speakNow()
             ACTION_RATE_CHANGED -> speaker.setRate(Prefs.speechRate(this))
+            ACTION_SPEAK_EVENTS_TEST -> speaker.say(upcomingEvents() ?: getString(R.string.no_upcoming_events))
+            ACTION_SPEAK_TEXT -> {
+                val text = intent.getStringExtra(EXTRA_TEXT)
+                val audio = getSystemService(AudioManager::class.java)
+                if (text != null && Prefs.speechEnabled(this) && audio.mode == AudioManager.MODE_NORMAL) {
+                    speaker.say(text)
+                }
+                ReminderScheduler.reschedule(this)
+            }
         }
         return START_STICKY
     }
 
     override fun onDestroy() {
         unregisterReceiver(screenReceiver)
+        contentResolver.unregisterContentObserver(calendarObserver)
         speaker.shutdown()
         isRunning = false
         super.onDestroy()
@@ -100,12 +135,15 @@ class SpeakerService : Service() {
         private const val NOTIFICATION_ID = 1
         const val ACTION_SPEAK_NOW = "cat.rellotgeparlant.SPEAK_NOW"
         const val ACTION_RATE_CHANGED = "cat.rellotgeparlant.RATE_CHANGED"
+        const val ACTION_SPEAK_TEXT = "cat.rellotgeparlant.SPEAK_TEXT"
+        const val ACTION_SPEAK_EVENTS_TEST = "cat.rellotgeparlant.SPEAK_EVENTS_TEST"
+        const val EXTRA_TEXT = "text"
 
         @Volatile var isRunning = false
             private set
 
-        fun ensureRunning(context: Context, action: String? = null) {
-            val intent = Intent(context, SpeakerService::class.java).setAction(action)
+        fun ensureRunning(context: Context, action: String? = null, text: String? = null) {
+            val intent = Intent(context, SpeakerService::class.java).setAction(action).putExtra(EXTRA_TEXT, text)
             ContextCompat.startForegroundService(context, intent)
         }
     }

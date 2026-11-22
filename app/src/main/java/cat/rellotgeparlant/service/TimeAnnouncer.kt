@@ -6,7 +6,11 @@ import java.time.Clock
 import java.time.LocalTime
 
 /** Turns a screen event into a spoken time, reading the clock at the moment of speaking. */
-class TimeAnnouncer(private val clock: Clock, private val speaker: Speaker) {
+class TimeAnnouncer(
+    private val clock: Clock,
+    private val speaker: Speaker,
+    private val events: () -> String? = { null },
+) {
 
     fun onScreenEvent(event: ScreenEvent, enabled: Boolean, keyguardLocked: Boolean, audioMode: Int) {
         if (!SpeakPolicy.shouldSpeak(enabled, event, keyguardLocked, audioMode)) return
@@ -15,7 +19,8 @@ class TimeAnnouncer(private val clock: Clock, private val speaker: Speaker) {
 
     fun speakNow() {
         val now = LocalTime.now(clock)
-        speaker.say(CatalanTimeFormatter.phrase(now.hour, now.minute))
+        val time = CatalanTimeFormatter.phrase(now.hour, now.minute)
+        speaker.say(events()?.let { "$time $it" } ?: time)
     }
 }
 
