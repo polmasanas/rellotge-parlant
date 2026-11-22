@@ -13,7 +13,6 @@ import android.content.IntentFilter
 import android.content.pm.ServiceInfo
 import android.database.ContentObserver
 import android.os.Handler
-import android.os.Looper
 import android.provider.CalendarContract
 import android.media.AudioManager
 import android.os.Build
@@ -50,8 +49,16 @@ class SpeakerService : Service() {
         }
     }
 
-    private val calendarObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
-        override fun onChange(selfChange: Boolean) = ReminderScheduler.reschedule(this@SpeakerService)
+    // Calendar syncs send bursts of change notifications: reschedule once, off the main thread.
+    private val calendarThread = android.os.HandlerThread("calendar").apply { start() }
+    private val calendarHandler = Handler(calendarThread.looper)
+    private val rescheduleTask = Runnable { ReminderScheduler.reschedule(this) }
+
+    private val calendarObserver = object : ContentObserver(calendarHandler) {
+        override fun onChange(selfChange: Boolean) {
+            calendarHandler.removeCallbacks(rescheduleTask)
+            calendarHandler.postDelayed(rescheduleTask, RESCHEDULE_DEBOUNCE_MS)
+        }
     }
 
     /** Upcoming events from the chosen calendar, as one spoken sentence, or null. */
@@ -108,6 +115,7 @@ class SpeakerService : Service() {
     override fun onDestroy() {
         unregisterReceiver(screenReceiver)
         contentResolver.unregisterContentObserver(calendarObserver)
+        calendarThread.quitSafely()
         speaker.shutdown()
         isRunning = false
         super.onDestroy()
@@ -141,6 +149,19 @@ class SpeakerService : Service() {
         const val ACTION_SPEAK_TEXT = "cat.rellotgeparlant.SPEAK_TEXT"
         const val ACTION_SPEAK_EVENTS_TEST = "cat.rellotgeparlant.SPEAK_EVENTS_TEST"
         const val EXTRA_TEXT = "text"
+        private const val RESCHEDULE_DEBOUNCE_MS = 2_000L
+
+        /**
+         * Hands an action to the service. If it's already running (a foreground service), a plain
+         * startService is allowed from the background; only start it as foreground when it isn't.
+         */
+        fun deliver(context: Context, action: String, text: String? = null) {
+            if (isRunning) {
+                context.startService(Intent(context, SpeakerService::class.java).setAction(action).putExtra(EXTRA_TEXT, text))
+            } else {
+                ensureRunning(context, action, text)
+            }
+        }
 
         @Volatile var isRunning = false
             private set

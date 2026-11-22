@@ -69,4 +69,10 @@ class TimeAnnouncerTest {
         a.speakNow()
         assertEquals("Són dos quarts i cinc de cinc de la tarda.", engine.spoken.last().first)
     }
+
+    @Test fun failingEventLookupStillSaysTime() {
+        val a = TimeAnnouncer(clock, speaker) { throw IllegalStateException("provider died") }
+        a.speakNow()
+        assertEquals("Són dos quarts i cinc de cinc de la tarda.", engine.spoken.last().first)
+    }
 }

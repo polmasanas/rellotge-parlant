@@ -145,6 +145,8 @@ class MainActivity : AppCompatActivity() {
         fillCalendarPicker()
         findViewById<Spinner>(R.id.calendar_picker).onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // An empty list (no permission, account briefly missing) must not erase the saved choice.
+                if (calendarIds.size <= 1) return
                 val chosen = calendarIds.getOrElse(position) { -1L }
                 if (chosen != Prefs.calendarId(this@MainActivity)) {
                     Prefs.setCalendarId(this@MainActivity, chosen)

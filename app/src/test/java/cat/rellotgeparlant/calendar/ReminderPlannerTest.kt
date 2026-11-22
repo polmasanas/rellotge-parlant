@@ -47,4 +47,16 @@ class ReminderPlannerTest {
     )
 
     @Test fun emptyIsNull() = assertNull(ReminderPlanner.next(emptyList(), now, s))
+
+    @Test fun morningAndReminderAtSameTimeAreBothSaid() {
+        // default morning 09:00 + reminder 60 min for a 10:00 event → both due at 09:00
+        val r = ReminderPlanner.next(listOf(allDay(day, "Aniversari de la Núria"), ev(10, title = "Metge")), day.atTime(8, 0), s)!!
+        assertEquals(day.atTime(9, 0), r.at)
+        assertEquals("Bon dia. Avui: Aniversari de la Núria. Recordatori: Avui, a les deu del matí: Metge.", r.text)
+    }
+
+    @Test fun twoEventsSameStartBothReminded() {
+        val r = ReminderPlanner.next(listOf(ev(12, title = "Metge"), ev(12, title = "Farmàcia")), now, s)!!
+        assertEquals("Recordatori: Avui, a les dotze del migdia: Metge. Recordatori: Avui, a les dotze del migdia: Farmàcia.", r.text)
+    }
 }

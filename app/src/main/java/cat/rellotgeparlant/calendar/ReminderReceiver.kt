@@ -13,7 +13,7 @@ class ReminderReceiver : BroadcastReceiver() {
             ReminderScheduler.reschedule(context)
             return
         }
-        runCatching { SpeakerService.ensureRunning(context, SpeakerService.ACTION_SPEAK_TEXT, text) }
+        runCatching { SpeakerService.deliver(context, SpeakerService.ACTION_SPEAK_TEXT, text) }
             .onFailure { ReminderScheduler.reschedule(context) }
     }
 

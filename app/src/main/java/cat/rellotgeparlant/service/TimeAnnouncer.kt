@@ -20,7 +20,9 @@ class TimeAnnouncer(
     fun speakNow() {
         val now = LocalTime.now(clock)
         val time = CatalanTimeFormatter.phrase(now.hour, now.minute)
-        speaker.say(events()?.let { "$time $it" } ?: time)
+        // Calendar trouble must never cost her the time.
+        val upcoming = runCatching { events() }.getOrNull()
+        speaker.say(upcoming?.let { "$time $it" } ?: time)
     }
 }
 

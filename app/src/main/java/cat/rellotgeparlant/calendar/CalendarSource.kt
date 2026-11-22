@@ -6,7 +6,7 @@ import android.provider.CalendarContract
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-/** Reads the phone's synced calendars. Returns nothing (never throws) without permission. */
+/** Reads the phone's synced calendars. Returns nothing (never throws) without permission or on provider errors. */
 class CalendarSource(context: Context) {
     private val resolver = context.applicationContext.contentResolver
 
@@ -18,7 +18,7 @@ class CalendarSource(context: Context) {
         )?.use { c ->
             buildList { while (c.moveToNext()) add(c.getLong(0) to (c.getString(1) ?: "?")) }
         } ?: emptyList()
-    } catch (_: SecurityException) {
+    } catch (_: Exception) {
         emptyList()
     }
 
@@ -52,7 +52,7 @@ class CalendarSource(context: Context) {
                     }
                 }
             } ?: emptyList()
-        } catch (_: SecurityException) {
+        } catch (_: Exception) {
             emptyList()
         }
     }
