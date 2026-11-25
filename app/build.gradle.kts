@@ -11,8 +11,8 @@ android {
         applicationId = "cat.rellotgeparlant"
         minSdk = 26
         targetSdk = 36
-        versionCode = 5
-        versionName = "0.3.0"
+        versionCode = 6
+        versionName = "0.3.1"
     }
 
     val keystoreFile = System.getenv("KEYSTORE_FILE")

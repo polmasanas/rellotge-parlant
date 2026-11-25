@@ -44,4 +44,5 @@
     </string-array>
     <string name="say_time">Quina hora és?</string>
     <string name="settings">Configuració</string>
+    <string name="hold_for_settings">Mantén premut 2 segons per obrir la configuració</string>
 </resources>

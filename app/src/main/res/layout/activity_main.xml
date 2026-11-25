@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/main_background"
     android:fitsSystemWindows="true">
 
-    <Button
+    <cat.rellotgeparlant.ui.ClockView
         android:id="@+id/say_time"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="88dp"
-        android:background="@drawable/big_button"
-        android:text="@string/say_time"
-        android:textAllCaps="false"
-        android:textColor="@color/big_button_text"
-        android:textSize="56sp"
-        android:textStyle="bold" />
+        android:layout_gravity="center"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="96dp"
+        android:clickable="true"
+        android:contentDescription="@string/say_time"
+        android:focusable="true"
+        android:foreground="@drawable/round_ripple" />
 
     <ImageButton
         android:id="@+id/open_settings"
@@ -29,6 +29,5 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/settings"
         android:src="@drawable/ic_settings"
-        app:tint="@color/cog"
-        xmlns:app="http://schemas.android.com/apk/res-auto" />
+        app:tint="@color/cog" />
 </FrameLayout>
