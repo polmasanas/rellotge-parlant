@@ -1,144 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/main_background"
     android:fitsSystemWindows="true">
 
-    <LinearLayout
+    <Button
+        android:id="@+id/say_time"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:layout_height="match_parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="88dp"
+        android:background="@drawable/big_button"
+        android:text="@string/say_time"
+        android:textAllCaps="false"
+        android:textColor="@color/big_button_text"
+        android:textSize="56sp"
+        android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/intro"
-            android:textSize="16sp" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/speech_enabled"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:minHeight="64dp"
-            android:text="@string/speech_enabled"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/test_button"
-            android:layout_width="match_parent"
-            android:layout_height="96dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/test_button"
-            android:textSize="28sp" />
-
-        <TextView
-            android:id="@+id/rate_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" />
-
-        <SeekBar
-            android:id="@+id/rate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="70" />
-
-        <TextView
-            android:id="@+id/volume_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" />
-
-        <SeekBar
-            android:id="@+id/volume"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="90" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="@string/calendar_title"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/calendar_help" />
-
-        <Spinner
-            android:id="@+id/calendar_picker"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="8dp" />
-
-        <TextView
-            android:id="@+id/hours_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp" />
-
-        <SeekBar
-            android:id="@+id/hours"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="23" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="@string/reminder_label" />
-
-        <Spinner
-            android:id="@+id/reminder"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:entries="@array/reminder_options" />
-
-        <Button
-            android:id="@+id/morning_time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/read_location"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="@string/read_location" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/read_description"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="@string/read_description" />
-
-        <Button
-            android:id="@+id/test_calendar"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/test_calendar"
-            android:textSize="20sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="@string/checklist_title"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:id="@+id/checks"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </LinearLayout>
-</ScrollView>
+    <ImageButton
+        android:id="@+id/open_settings"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/settings"
+        android:src="@drawable/ic_settings"
+        app:tint="@color/cog"
+        xmlns:app="http://schemas.android.com/apk/res-auto" />
+</FrameLayout>

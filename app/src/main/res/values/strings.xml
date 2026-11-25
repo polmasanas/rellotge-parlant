@@ -42,4 +42,6 @@
         <item>1 hora abans</item>
         <item>2 hores abans</item>
     </string-array>
+    <string name="say_time">Quina hora és?</string>
+    <string name="settings">Configuració</string>
 </resources>
